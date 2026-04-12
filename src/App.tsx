@@ -937,15 +937,15 @@ export default function App() {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-10 border-b-4 border-slate-300 pb-12">
-                <div className={`p-8 rounded-[2.5rem] text-white shadow-2xl ${currentCategory.color} rotate-[-2deg]`}>
-                  <currentCategory.icon size={64} strokeWidth={2.5} />
+              <div className="flex flex-col md:flex-row md:items-center gap-6 md:gap-10 border-b-4 border-slate-300 pb-8 md:pb-12">
+                <div className={`p-6 md:p-8 rounded-[2rem] md:rounded-[2.5rem] text-white shadow-2xl ${currentCategory.color} rotate-[-2deg] self-start md:self-auto`}>
+                  <currentCategory.icon className="w-12 h-12 md:w-16 md:h-16" strokeWidth={2.5} />
                 </div>
                 <div>
-                  <h2 className="text-6xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">{currentCategory.title}</h2>
-                  <div className="flex items-center gap-4 mt-4 ml-1">
-                    <p className="text-slate-500 font-black uppercase tracking-[0.5em] italic opacity-60">Visualizzatore Libreria</p>
-                    <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-black tracking-widest uppercase">
+                  <h2 className="text-4xl md:text-6xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">{currentCategory.title}</h2>
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-3 md:gap-4 mt-4 md:ml-1">
+                    <p className="text-slate-500 font-black uppercase tracking-[0.1em] md:tracking-[0.2em] text-xs md:text-sm italic opacity-80">{currentCategory.description}</p>
+                    <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-[10px] md:text-xs font-black tracking-widest uppercase self-start sm:self-auto">
                       {visibleCards.length} Carte
                     </span>
                   </div>

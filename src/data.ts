@@ -9,15 +9,15 @@ import {
 import { HexagonIcon, CircleIcon } from './components/Icons';
 
 export const categories = [
-  { id: 'digcomp', title: 'DigComp', hex: '#f37021', color: 'bg-[#f37021]', text: 'text-[#f37021]', border: 'border-[#f37021]', gradient: 'from-[#f37021] to-[#f7941d]', icon: Cpu },
-  { id: 'entrecomp', title: 'EntreComp', hex: '#91278f', color: 'bg-[#91278f]', text: 'text-[#91278f]', border: 'border-[#91278f]', gradient: 'from-[#91278f] to-[#b3519e]', icon: Lightbulb },
-  { id: 'lifecomp', title: 'LifeComp', hex: '#8dc63f', color: 'bg-[#8dc63f]', text: 'text-[#8dc63f]', border: 'border-[#8dc63f]', gradient: 'from-[#8dc63f] to-[#a6ce39]', icon: User },
-  { id: 'greencomp', title: 'GreenComp', hex: '#00a651', color: 'bg-[#00a651]', text: 'text-[#00a651]', border: 'border-[#00a651]', gradient: 'from-[#00a651] to-[#3cb878]', icon: Leaf },
-  { id: 'transversal', title: 'Trasversali', hex: '#00aeef', color: 'bg-[#00aeef]', text: 'text-[#00aeef]', border: 'border-[#00aeef]', gradient: 'from-[#00aeef] to-[#6dcff6]', icon: Share2 },
-  { id: 'setting', title: 'Setting', hex: '#6d6e71', color: 'bg-[#6d6e71]', text: 'text-[#6d6e71]', border: 'border-[#6d6e71]', gradient: 'from-[#6d6e71] to-[#939598]', icon: Settings },
-  { id: 'planning', title: 'Pianificazione', hex: '#414042', color: 'bg-[#414042]', text: 'text-[#414042]', border: 'border-[#414042]', gradient: 'from-[#414042] to-[#58595b]', icon: MapIcon },
-  { id: 'methods', title: 'Metodi', hex: '#3ab54a', color: 'bg-[#3ab54a]', text: 'text-[#3ab54a]', border: 'border-[#3ab54a]', gradient: 'from-[#3ab54a] to-[#8dc63f]', icon: BookOpen },
-  { id: 'assessment', title: 'Valutazione', hex: '#2e3192', color: 'bg-[#2e3192]', text: 'text-[#2e3192]', border: 'border-[#2e3192]', gradient: 'from-[#2e3192] to-[#662d91]', icon: CheckSquare },
+  { id: 'digcomp', title: 'DigComp', description: 'Competenze digitali per i cittadini', hex: '#f37021', color: 'bg-[#f37021]', text: 'text-[#f37021]', border: 'border-[#f37021]', gradient: 'from-[#f37021] to-[#f7941d]', icon: Cpu },
+  { id: 'entrecomp', title: 'EntreComp', description: 'Competenze imprenditoriali e spirito di iniziativa', hex: '#91278f', color: 'bg-[#91278f]', text: 'text-[#91278f]', border: 'border-[#91278f]', gradient: 'from-[#91278f] to-[#b3519e]', icon: Lightbulb },
+  { id: 'lifecomp', title: 'LifeComp', description: 'Competenze personali, sociali e di imparare a imparare', hex: '#8dc63f', color: 'bg-[#8dc63f]', text: 'text-[#8dc63f]', border: 'border-[#8dc63f]', gradient: 'from-[#8dc63f] to-[#a6ce39]', icon: User },
+  { id: 'greencomp', title: 'GreenComp', description: 'Competenze per la sostenibilità ambientale', hex: '#00a651', color: 'bg-[#00a651]', text: 'text-[#00a651]', border: 'border-[#00a651]', gradient: 'from-[#00a651] to-[#3cb878]', icon: Leaf },
+  { id: 'transversal', title: 'Trasversali', description: 'Competenze trasversali e soft skills', hex: '#00aeef', color: 'bg-[#00aeef]', text: 'text-[#00aeef]', border: 'border-[#00aeef]', gradient: 'from-[#00aeef] to-[#6dcff6]', icon: Share2 },
+  { id: 'setting', title: 'Setting', description: "Definizione del contesto e dei parametri dell'attività", hex: '#6d6e71', color: 'bg-[#6d6e71]', text: 'text-[#6d6e71]', border: 'border-[#6d6e71]', gradient: 'from-[#6d6e71] to-[#939598]', icon: Settings },
+  { id: 'planning', title: 'Pianificazione', description: "Fasi di progettazione dell'esperienza di apprendimento", hex: '#414042', color: 'bg-[#414042]', text: 'text-[#414042]', border: 'border-[#414042]', gradient: 'from-[#414042] to-[#58595b]', icon: MapIcon },
+  { id: 'methods', title: 'Metodi', description: 'Strategie e metodologie didattiche', hex: '#3ab54a', color: 'bg-[#3ab54a]', text: 'text-[#3ab54a]', border: 'border-[#3ab54a]', gradient: 'from-[#3ab54a] to-[#8dc63f]', icon: BookOpen },
+  { id: 'assessment', title: 'Valutazione', description: 'Strumenti e approcci per la valutazione', hex: '#2e3192', color: 'bg-[#2e3192]', text: 'text-[#2e3192]', border: 'border-[#2e3192]', gradient: 'from-[#2e3192] to-[#662d91]', icon: CheckSquare },
 ];
 
 export const cardsData = {

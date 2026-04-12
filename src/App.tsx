@@ -687,7 +687,7 @@ export default function App() {
           {activeTab === 'instructions' ? (
             <div className="bg-white p-10 lg:p-16 rounded-[3rem] shadow-2xl border-b-[10px] border-indigo-500 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
               <h1 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tighter italic mb-6">
-                🚀 Istruzioni "Portfolio delle Competenze"
+                🚀 "Portfolio delle Competenze"
               </h1>
               <p className="text-xl text-slate-600 font-medium leading-relaxed mb-12">
                 Benvenuti nel nostro spazio di lavoro virtuale! Oggi trasformeremo il nostro anno di Servizio Civile o di Volontariato in un vero e proprio Portfolio visivo e collaborativo. L'obiettivo è rendere visibile tutto ciò che avete imparato sul campo.
@@ -721,7 +721,7 @@ export default function App() {
                   <div>
                     <h3 className="text-2xl font-black text-slate-800 mb-2">"Scegli le tue Competenze"</h3>
                     <p className="text-slate-600 leading-relaxed text-lg">
-                      Mentre leggete, individuate <strong>2 o 3 competenze</strong> che sentite di aver allenato, scoperto o messo alla prova durante questa esperienza di volontariato. Cliccate sul cerchio in alto a destra di ogni carta per aggiungerla al vostro Portfolio.
+                      Mentre leggete, individuate le <strong>competenze</strong> che ritenete di aver allenato, scoperto o messo alla prova durante questa esperienza di volontariato. Cliccate sul cerchio in alto a destra di ogni carta per aggiungerla al vostro Portfolio.
                     </p>
                   </div>
                 </div>

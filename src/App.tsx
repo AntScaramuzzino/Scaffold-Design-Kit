@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { 
   Settings, Layout, PlayCircle, ChevronLeft, ChevronRight, 
-  Download, Printer, Info, StickyNote, Check, X, 
+  Download, Printer, Info, StickyNote, Check, X, Layers, Star,
   Briefcase as PortfolioIcon, MessageSquare, Eye, Clipboard, Building, Monitor, HelpCircle
 } from 'lucide-react';
 import { categories, cardsData, processSteps } from './data';
@@ -30,9 +30,10 @@ interface CardProps {
   note: string;
   onNoteChange?: (id: string, value: string) => void;
   isPortfolioView?: boolean;
+  isDeckView?: boolean;
 }
 
-const Card: React.FC<CardProps> = ({ card, categoryId, isSelected, onToggle, onOpenDetails, note, onNoteChange, isPortfolioView }) => {
+const Card: React.FC<CardProps> = ({ card, categoryId, isSelected, onToggle, onOpenDetails, note, onNoteChange, isPortfolioView, isDeckView }) => {
   const category = categories.find(c => c.id === categoryId) || categories[0];
   const IconComponent = card.icon || Info;
 
@@ -134,16 +135,24 @@ const Card: React.FC<CardProps> = ({ card, categoryId, isSelected, onToggle, onO
         </div>
       )}
 
-      {/* Stampa: Area Note (Compatta per griglia 3x3) */}
-      <div className="bg-amber-50 border-t border-amber-200 p-2 hidden print:flex flex-col min-h-[60px] max-h-[60px] overflow-hidden">
-        <div className="flex items-center gap-1 mb-1 text-amber-600">
-          <StickyNote size={10} />
-          <h4 className="text-[8px] font-black uppercase tracking-tight">Note</h4>
+      {/* Stampa: Area Note o Hint (Compatta per griglia 3x3) */}
+      {isDeckView ? (
+        <div className={`${category.color} p-2 hidden print:flex flex-col min-h-[60px] max-h-[60px] overflow-hidden`}>
+          <p className="text-[9px] italic text-white font-bold leading-tight">
+            💡 {card.hint || "Nessun suggerimento disponibile."}
+          </p>
         </div>
-        <p className="text-[9px] italic text-slate-700 leading-tight line-clamp-3">
-          {note || "Spazio note..."}
-        </p>
-      </div>
+      ) : (
+        <div className="bg-amber-50 border-t border-amber-200 p-2 hidden print:flex flex-col min-h-[60px] max-h-[60px] overflow-hidden">
+          <div className="flex items-center gap-1 mb-1 text-amber-600">
+            <StickyNote size={10} />
+            <h4 className="text-[8px] font-black uppercase tracking-tight">Note</h4>
+          </div>
+          <p className="text-[9px] italic text-slate-700 leading-tight line-clamp-3">
+            {note || "Spazio note..."}
+          </p>
+        </div>
+      )}
     </div>
   );
 };
@@ -183,8 +192,8 @@ const DetailModal: React.FC<DetailModalProps> = ({ card, category, note, onNoteC
               </span>
             </div>
             
-            <div className={`w-32 h-32 rounded-2xl flex items-center justify-center bg-gradient-to-br ${category.gradient} mb-6 shadow-lg`}>
-              <IconComponent size={80} strokeWidth={1.5} className="text-white" />
+            <div className={`w-full py-12 md:w-32 md:h-32 md:py-0 rounded-2xl flex items-center justify-center bg-gradient-to-br ${category.gradient} mb-6 shadow-lg`}>
+              <IconComponent strokeWidth={1.5} className="w-24 h-24 md:w-20 md:h-20 text-white" />
             </div>
 
             <p className="text-xl font-medium text-slate-800 leading-relaxed mb-6">
@@ -239,7 +248,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ card, category, note, onNoteC
         </div>
 
         {/* Lato Destro: Pannello di Lavoro (Post-it e Selezione) */}
-        <div className="w-full md:w-80 bg-white p-6 flex flex-col h-full shrink-0">
+        <div className="w-full md:w-80 bg-white p-6 flex flex-col md:h-full shrink-0 border-t md:border-t-0 md:border-l border-zinc-200">
           <div className="flex justify-end mb-6 hidden md:flex">
             <button onClick={onClose} className="p-2 bg-zinc-100 rounded-full text-zinc-500 hover:text-zinc-900 transition-colors">
               <X size={20} />
@@ -270,7 +279,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ card, category, note, onNoteC
               value={note || ''}
               onChange={(e) => onNoteChange(card.code || card.id, e.target.value)}
               placeholder="Scrivi qui i tuoi appunti..."
-              className="flex-1 w-full p-4 text-sm bg-amber-50 border border-amber-200 rounded-xl text-slate-800 resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner italic min-h-[350px]"
+              className="flex-1 w-full p-4 text-sm bg-amber-50 border border-amber-200 rounded-xl text-slate-800 resize-none focus:outline-none focus:ring-2 focus:ring-amber-400 shadow-inner italic min-h-[120px] md:min-h-[350px]"
             />
           </div>
         </div>
@@ -282,7 +291,7 @@ const DetailModal: React.FC<DetailModalProps> = ({ card, category, note, onNoteC
 
 // --- APP PRINCIPALE ---
 export default function App() {
-  const [activeTab, setActiveTab] = useState('setting');
+  const [activeTab, setActiveTab] = useState('instructions');
   const [isGuided, setIsGuided] = useState(false);
   const [currentStepIndex, setCurrentStepIndex] = useState(0);
   
@@ -290,6 +299,7 @@ export default function App() {
   const [selectedCards, setSelectedCards] = useState(new Set());
   const [cardNotes, setCardNotes] = useState({});
   const [detailCard, setDetailCard] = useState(null);
+  const [userName, setUserName] = useState('');
 
   // Sotto-Filtri per le librerie di competenze
   const [compSubFilter, setCompSubFilter] = useState('all');
@@ -332,7 +342,9 @@ export default function App() {
     const selected = allCardsList.filter(c => selectedCards.has(c.code || c.id));
     if (selected.length === 0) return;
 
-    let content = "# IL MIO PORTFOLIO SCAFFOLD\n\nRiepilogo del progetto didattico generato.\n\n---\n\n";
+    let content = userName 
+      ? `# PORTFOLIO DELLE COMPETENZE DI ${userName.toUpperCase()}\n\nRiepilogo del progetto didattico generato.\n\n---\n\n`
+      : `# IL MIO PORTFOLIO SCAFFOLD\n\nRiepilogo del progetto didattico generato.\n\n---\n\n`;
 
     const grouped = selected.reduce((acc, card) => {
       const cat = categories.find(c => c.id === card.catId);
@@ -369,7 +381,10 @@ export default function App() {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'Mio_Portfolio_SCAFFOLD.md';
+    const fileName = userName 
+      ? `Portfolio_${userName.replace(/\s+/g, '_')}.md`
+      : 'Mio_Portfolio_SCAFFOLD.md';
+    link.download = fileName;
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -406,7 +421,7 @@ export default function App() {
       <html lang="it">
       <head>
         <meta charset="UTF-8">
-        <title>Portfolio SCAFFOLD - Esportazione PDF</title>
+        <title>${activeTab === 'deck' ? 'SCAFFOLD DECK' : `Portfolio di ${userName || 'SCAFFOLD'}`}</title>
         <script src="https://cdn.tailwindcss.com"></script>
         <style>
           @page {
@@ -438,6 +453,8 @@ export default function App() {
           .print-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 8.5cm);
+            align-content: start;
             gap: 4mm;
             width: 100%;
             height: 26.5cm; /* Altezza fissa del contenitore per forzare il break */
@@ -492,6 +509,10 @@ export default function App() {
       return allCardsList.filter(c => selectedCards.has(c.code || c.id));
     }
 
+    if (activeTab === 'deck') {
+      return allCardsList;
+    }
+
     if (!isGuided) {
       return cardsData[activeTab]?.map(c => ({ ...c, catId: activeTab })) || [];
     }
@@ -531,13 +552,21 @@ export default function App() {
           <p className="text-[9px] text-zinc-500 font-bold uppercase tracking-[0.3em] mt-2">Design Kit Interattivo</p>
         </div>
         
-        {/* Pulsante Portfolio */}
+        {/* Pulsante Portfolio - GIOVANI */}
         <div className="p-3 border-b border-slate-800">
+          <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2 px-2">Per i Giovani</div>
+          <button 
+            onClick={() => { setIsGuided(false); setActiveTab('instructions'); }}
+            className={`w-full py-3 rounded-xl flex items-center gap-3 font-black text-[11px] uppercase tracking-widest transition-all px-4 mb-2 ${activeTab === 'instructions' ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-900/40' : 'bg-slate-800 text-white hover:bg-indigo-500'}`}
+          >
+            <Info size={18} />
+            Istruzioni
+          </button>
           <button 
             onClick={handlePortfolioClick}
-            className={`w-full py-3 rounded-xl flex items-center gap-2 font-black text-[11px] uppercase tracking-widest transition-all px-3 ${activeTab === 'portfolio' ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-900/40' : 'bg-slate-800 text-white hover:bg-indigo-500'}`}
+            className={`w-full py-3 rounded-xl flex items-center gap-3 font-black text-[11px] uppercase tracking-widest transition-all px-4 ${activeTab === 'portfolio' ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-900/40' : 'bg-slate-800 text-white hover:bg-indigo-500'}`}
           >
-            <PortfolioIcon size={16} />
+            <PortfolioIcon size={18} />
             Mio Portfolio
             {selectedCards.size > 0 && (
               <span className="ml-auto bg-white text-indigo-600 px-2 py-0.5 rounded-full text-[10px] font-black shadow-inner">
@@ -547,7 +576,93 @@ export default function App() {
           </button>
         </div>
 
-        <div className="p-3 border-b border-slate-800">
+        <nav className="flex-1 overflow-y-auto p-3 space-y-4 custom-scrollbar">
+          {isGuided ? (
+            <div>
+              <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2 px-2">Percorso Formatore</div>
+              <div className="space-y-1">
+                {processSteps.map((step, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentStepIndex(idx)}
+                    className={`w-full p-3 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 transition-all ${idx === currentStepIndex ? 'bg-emerald-600 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}`}
+                  >
+                    <span className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${idx === currentStepIndex ? 'border-white' : 'border-zinc-700'}`}>{idx + 1}</span>
+                    {step.title.split('. ')[1]}
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : (
+            <>
+              {/* SEZIONE COMPETENZE */}
+              <div>
+                <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2 px-2">Competenze</div>
+                <div className="space-y-1">
+                  {categories.filter(c => ['digcomp', 'entrecomp', 'lifecomp', 'greencomp', 'transversal'].includes(c.id)).map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => { setIsGuided(false); setActiveTab(cat.id); }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[11px] font-black transition-all ${
+                        activeTab === cat.id ? `${cat.color} text-white shadow-xl scale-[1.03]` : 'text-zinc-500 hover:bg-zinc-800 hover:text-white'
+                      }`}
+                    >
+                      <cat.icon size={18} />
+                      <span className="uppercase tracking-[0.1em]">{cat.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* SEZIONE FORMATORI */}
+              <div>
+                <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2 px-2">Strumenti Formatore</div>
+                <div className="space-y-1">
+                  {categories.filter(c => ['setting', 'planning', 'methods', 'assessment'].includes(c.id)).map((cat) => (
+                    <button
+                      key={cat.id}
+                      onClick={() => { setIsGuided(false); setActiveTab(cat.id); }}
+                      className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[11px] font-black transition-all ${
+                        activeTab === cat.id ? `${cat.color} text-white shadow-xl scale-[1.03]` : 'text-zinc-500 hover:bg-zinc-800 hover:text-white'
+                      }`}
+                    >
+                      <cat.icon size={18} />
+                      <span className="uppercase tracking-[0.1em]">{cat.title}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* SEZIONE MATERIALI */}
+              <div>
+                <div className="text-[10px] font-black text-zinc-500 uppercase tracking-widest mb-2 px-2 mt-4">Materiali</div>
+                <div className="space-y-1">
+                  <button
+                    onClick={() => { setIsGuided(false); setActiveTab('deck'); }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[11px] font-black transition-all ${
+                      activeTab === 'deck' ? `bg-slate-800 text-white shadow-xl scale-[1.03]` : 'text-zinc-500 hover:bg-zinc-800 hover:text-white'
+                    }`}
+                  >
+                    <Layers size={18} />
+                    <span className="uppercase tracking-[0.1em]">Deck Completo</span>
+                  </button>
+                  <button
+                    onClick={() => { setIsGuided(false); setActiveTab('credits'); }}
+                    className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[11px] font-black transition-all ${
+                      activeTab === 'credits' ? `bg-amber-500 text-white shadow-xl scale-[1.03]` : 'text-zinc-500 hover:bg-zinc-800 hover:text-white'
+                    }`}
+                  >
+                    <Star size={18} />
+                    <span className="uppercase tracking-[0.1em]">Credits</span>
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </nav>
+
+        {/* Pulsante Avvia Percorso - FORMATORI (in basso) */}
+        <div className="p-3 border-t border-slate-800 bg-[#1a1b1e]">
           <button 
             onClick={() => {
               setIsGuided(!isGuided);
@@ -559,37 +674,9 @@ export default function App() {
             className={`w-full py-3 rounded-xl flex items-center justify-center gap-2 font-black text-[10px] uppercase tracking-widest transition-all ${isGuided ? 'bg-emerald-600 text-white shadow-xl shadow-emerald-900/40' : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'}`}
           >
             <PlayCircle size={18} />
-            {isGuided ? 'Esci dal Percorso' : 'Avvia Percorso'}
+            {isGuided ? 'Esci dal Percorso' : 'Avvia Percorso Formatore'}
           </button>
         </div>
-
-        <nav className="flex-1 overflow-y-auto p-3 space-y-1 custom-scrollbar">
-          {isGuided ? (
-            processSteps.map((step, idx) => (
-              <button
-                key={idx}
-                onClick={() => setCurrentStepIndex(idx)}
-                className={`w-full p-3 rounded-lg text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-3 transition-all ${idx === currentStepIndex ? 'bg-emerald-600 text-white shadow-lg' : 'text-zinc-500 hover:text-zinc-300 hover:bg-white/5'}`}
-              >
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center border-2 ${idx === currentStepIndex ? 'border-white' : 'border-zinc-700'}`}>{idx + 1}</span>
-                {step.title.split('. ')[1]}
-              </button>
-            ))
-          ) : (
-            categories.map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => { setIsGuided(false); setActiveTab(cat.id); }}
-                className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg text-[11px] font-black transition-all ${
-                  activeTab === cat.id ? `${cat.color} text-white shadow-xl scale-[1.03]` : 'text-zinc-500 hover:bg-zinc-800 hover:text-white'
-                }`}
-              >
-                <cat.icon size={18} />
-                <span className="uppercase tracking-[0.1em]">{cat.title}</span>
-              </button>
-            ))
-          )}
-        </nav>
       </div>
 
       {/* Main Board Content */}
@@ -597,21 +684,194 @@ export default function App() {
 
         <div className="p-6 lg:p-12 max-w-7xl mx-auto">
           
-          <header className="mb-12 no-print">
-            {activeTab === 'portfolio' ? (
-              <div className="bg-indigo-600 p-10 rounded-[3rem] shadow-2xl text-white flex flex-col xl:flex-row items-center justify-between gap-8 relative overflow-hidden">
-                <div className="flex items-center gap-6 z-10">
-                  <div className="p-6 bg-white/10 rounded-full backdrop-blur-md">
-                    <PortfolioIcon size={48} strokeWidth={2} />
-                  </div>
+          {activeTab === 'instructions' ? (
+            <div className="bg-white p-10 lg:p-16 rounded-[3rem] shadow-2xl border-b-[10px] border-indigo-500 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <h1 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tighter italic mb-6">
+                🚀 Istruzioni "Portfolio delle Competenze"
+              </h1>
+              <p className="text-xl text-slate-600 font-medium leading-relaxed mb-12">
+                Benvenuti nel nostro spazio di lavoro virtuale! Oggi trasformeremo il nostro anno di Servizio Civile o di Volontariato in un vero e proprio Portfolio visivo e collaborativo. L'obiettivo è rendere visibile tutto ciò che avete imparato sul campo.
+                <br/><br/>
+                Seguite questi semplici passaggi:
+              </p>
+
+              <div className="space-y-10">
+                {/* Step 1 */}
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xl shadow-inner">1</div>
                   <div>
-                    <h2 className="text-5xl font-black tracking-tighter uppercase italic leading-none">Il Mio Portfolio</h2>
-                    <p className="text-indigo-200 font-bold uppercase tracking-[0.3em] mt-3">Riepilogo del Progetto Didattico</p>
+                    <h3 className="text-2xl font-black text-slate-800 mb-2">"Esplora la Galleria delle Competenze"</h3>
+                    <p className="text-slate-600 leading-relaxed text-lg">
+                      Troverete sparse diverse carte colorate. Sono le carte Scaffold, che rappresentano le competenze chiave europee. Noterete colori diversi:
+                    </p>
+                    <ul className="mt-4 space-y-3 text-lg">
+                      <li className="flex items-center gap-3"><span className="w-4 h-4 rounded-full bg-[#8dc63f] shadow-sm"></span> <strong>Verde (LifeComp & GreenComp):</strong> Competenze personali, sociali, imparare a imparare e sostenibilità.</li>
+                      <li className="flex items-center gap-3"><span className="w-4 h-4 rounded-full bg-[#91278f] shadow-sm"></span> <strong>Viola (EntreComp):</strong> Competenze imprenditoriali e spirito di iniziativa.</li>
+                      <li className="flex items-center gap-3"><span className="w-4 h-4 rounded-full bg-[#f37021] shadow-sm"></span> <strong>Arancione (DigComp):</strong> Competenze digitali.</li>
+                    </ul>
+                    <p className="text-slate-500 leading-relaxed mt-4 italic">
+                      Prendetevi qualche minuto per navigare nello spazio virtuale, fare zoom sulle carte e leggere le descrizioni.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 2 */}
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xl shadow-inner">2</div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 mb-2">"Scegli le tue Competenze"</h3>
+                    <p className="text-slate-600 leading-relaxed text-lg">
+                      Mentre leggete, individuate <strong>2 o 3 competenze</strong> che sentite di aver allenato, scoperto o messo alla prova durante questa esperienza di volontariato. Cliccate sul cerchio in alto a destra di ogni carta per aggiungerla al vostro Portfolio.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 3 */}
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xl shadow-inner">3</div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 mb-2">"Raccontati le tue esperienze" <span className="text-lg text-slate-500 font-medium">(Crea un Post-it virtuale)</span></h3>
+                    <p className="text-slate-600 leading-relaxed text-lg">
+                      Ora tocca a voi creare i contenuti! Andate nella sezione "Mio Portfolio" e nello spazio "Le mie Note" sotto ogni carta scrivete un esempio pratico.
+                    </p>
+                    <div className="mt-4 bg-amber-50 border-l-4 border-amber-400 p-4 rounded-r-lg">
+                      <p className="text-amber-800 italic">
+                        <strong>Esempio:</strong> Non limitatevi a concetti astratti. Raccontate un episodio reale. Invece di scrivere "Ho imparato il lavoro di squadra", scrivete "Ho gestito i turni della mensa collaborando con 4 colleghi durante un'emergenza".
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Step 4 */}
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xl shadow-inner">4</div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 mb-2">"Stampa il tuo Portfolio e preparati a condividerlo"</h3>
+                    <p className="text-slate-600 leading-relaxed text-lg">
+                      Costruisci il tuo Portfolio e, una volta completato, esportalo in PDF o scaricalo. Inseriscilo poi nella bacheca digitale predisposta dal formatore.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 5 */}
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xl shadow-inner">5</div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 mb-2">Interagisci e fai Peer Feedback <span className="text-lg text-slate-500 font-medium">(Feedback tra pari)</span></h3>
+                    <p className="text-slate-600 leading-relaxed text-lg">
+                      Il lavoro non finisce con il vostro portfolio. Esplorate la bacheca digitale e leggete le esperienze dei vostri colleghi. Utilizzate le funzioni della bacheca per collaborare: lasciate un "mi piace", aggiungete un commentino o un'emoji di reazione ai post-it degli altri.
+                    </p>
+                  </div>
+                </div>
+
+                {/* Step 6 */}
+                <div className="flex gap-6">
+                  <div className="flex-shrink-0 w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center text-indigo-600 font-black text-xl shadow-inner">6</div>
+                  <div>
+                    <h3 className="text-2xl font-black text-slate-800 mb-2">"Pronti per la Plenaria"</h3>
+                    <p className="text-slate-600 leading-relaxed text-lg">
+                      Quando il tempo sarà scaduto, ci ritroveremo in videochiamata. Osserveremo insieme la mappa visiva che abbiamo creato per riflettere su quali aree sono più ricche di esperienze e quali invece sono rimaste vuote, condividendo le nostre storie a voce.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="mt-12 text-center">
+                <button 
+                  onClick={() => setActiveTab('digcomp')}
+                  className="bg-indigo-600 text-white px-8 py-4 rounded-2xl font-black uppercase tracking-widest hover:bg-indigo-700 hover:scale-105 transition-all shadow-xl"
+                >
+                  Inizia l'Esplorazione
+                </button>
+              </div>
+            </div>
+          ) : activeTab === 'credits' ? (
+            <div className="bg-white p-10 lg:p-16 rounded-[3rem] shadow-2xl border-b-[10px] border-amber-500 max-w-4xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="p-4 bg-amber-100 text-amber-600 rounded-2xl">
+                  <Star size={40} strokeWidth={2} />
+                </div>
+                <h1 className="text-4xl lg:text-5xl font-black text-slate-900 tracking-tighter italic">
+                  Credits
+                </h1>
+              </div>
+              
+              <div className="space-y-8 text-lg text-slate-700 leading-relaxed">
+                <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100">
+                  <p className="font-bold text-xl text-slate-900 mb-2">di Antonio Scaramuzzino</p>
+                  <p className="text-slate-600">rilasciato sotto la licenza Creative Commons Attribution 4.0 International (CC BY 4.0)</p>
+                </div>
+
+                <div className="bg-slate-50 p-8 rounded-2xl border border-slate-100">
+                  <p className="mb-4">
+                    European Commission, Joint Research Centre, Bacigalupo, M., Binasco, A., Bekh, O., Israel, H. and Weikert García, L., "Scaffold", a deck of cards to design competence-oriented learning experiences, Publications Office of the European Union, Luxembourg, 2024, <a href="https://data.europa.eu/doi/10.2760/057661" target="_blank" rel="noopener noreferrer" className="text-indigo-600 hover:underline">https://data.europa.eu/doi/10.2760/057661</a>, JRC136622
+                  </p>
+                  <p className="mb-4">
+                    Scaffold è un prodotto sviluppato congiuntamente dalla European Training Foundation (ETF) e dal Joint Research Centre (JRC) della Commissione Europea.
+                  </p>
+                  <p className="font-bold">
+                    Copyright: © European Union, 2024
+                  </p>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <>
+              <header className="mb-12 no-print">
+            {activeTab === 'deck' ? (
+              <div className="bg-slate-800 p-10 rounded-[3rem] shadow-2xl text-white flex flex-col xl:flex-row items-center justify-between gap-8 relative overflow-hidden">
+                <div className="flex items-center gap-6 z-10 w-full xl:w-auto">
+                  <div className="p-6 bg-white/10 rounded-full backdrop-blur-md hidden sm:block">
+                    <Layers size={48} strokeWidth={2} />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-4xl sm:text-5xl font-black tracking-tighter uppercase italic leading-none mb-4">
+                      Deck Completo
+                    </h2>
+                    <p className="text-slate-300 font-bold uppercase tracking-[0.2em] text-sm">
+                      {allCardsList.length} Carte totali
+                    </p>
                   </div>
                 </div>
                 
                 {/* BOTTONI DI DOWNLOAD E STAMPA */}
-                <div className="flex gap-4 z-10">
+                <div className="flex flex-col sm:flex-row gap-4 z-10 w-full xl:w-auto">
+                  <button 
+                    onClick={handleExportPDF}
+                    className="bg-white text-slate-800 px-6 py-4 rounded-2xl font-black uppercase tracking-widest flex items-center gap-3 hover:bg-slate-50 hover:scale-105 transition-all shadow-xl"
+                  >
+                    <Printer size={22} />
+                    <span>Stampa Deck</span>
+                  </button>
+                </div>
+              </div>
+            ) : activeTab === 'portfolio' ? (
+              <div className="bg-indigo-600 p-10 rounded-[3rem] shadow-2xl text-white flex flex-col xl:flex-row items-center justify-between gap-8 relative overflow-hidden">
+                <div className="flex items-center gap-6 z-10 w-full xl:w-auto">
+                  <div className="p-6 bg-white/10 rounded-full backdrop-blur-md hidden sm:block">
+                    <PortfolioIcon size={48} strokeWidth={2} />
+                  </div>
+                  <div className="flex-1">
+                    <h2 className="text-4xl sm:text-5xl font-black tracking-tighter uppercase italic leading-none mb-4">
+                      {userName ? `Il Portfolio di ${userName}` : 'Il Mio Portfolio'}
+                    </h2>
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-4">
+                      <input 
+                        type="text" 
+                        placeholder="Inserisci il tuo nome..." 
+                        value={userName}
+                        onChange={(e) => setUserName(e.target.value)}
+                        className="bg-indigo-700/50 border border-indigo-400 text-white placeholder:text-indigo-300 px-4 py-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-white w-full sm:w-64 font-medium"
+                      />
+                      <p className="text-indigo-200 font-bold uppercase tracking-[0.2em] text-sm">
+                        {selectedCards.size} Competenze
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                
+                {/* BOTTONI DI DOWNLOAD E STAMPA */}
+                <div className="flex flex-col sm:flex-row gap-4 z-10 w-full xl:w-auto">
                   <button 
                     onClick={handleDownloadMarkdown}
                     className="bg-white/10 border border-white/20 text-white px-6 py-4 rounded-2xl font-black uppercase tracking-widest flex items-center gap-3 hover:bg-white/20 transition-all disabled:opacity-50"
@@ -683,7 +943,12 @@ export default function App() {
                 </div>
                 <div>
                   <h2 className="text-6xl font-black text-slate-900 tracking-tighter uppercase italic leading-none">{currentCategory.title}</h2>
-                  <p className="text-slate-500 font-black uppercase tracking-[0.5em] mt-4 ml-1 italic opacity-60">Visualizzatore Libreria</p>
+                  <div className="flex items-center gap-4 mt-4 ml-1">
+                    <p className="text-slate-500 font-black uppercase tracking-[0.5em] italic opacity-60">Visualizzatore Libreria</p>
+                    <span className="bg-slate-200 text-slate-600 px-3 py-1 rounded-full text-xs font-black tracking-widest uppercase">
+                      {visibleCards.length} Carte
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
@@ -709,6 +974,7 @@ export default function App() {
                   note={cardNotes[card.code || card.id]}
                   onNoteChange={activeTab === 'portfolio' ? handleNoteChange : undefined}
                   isPortfolioView={activeTab === 'portfolio'}
+                  isDeckView={activeTab === 'deck'}
                 />
               ))}
             </div>
@@ -716,7 +982,7 @@ export default function App() {
 
           {/* Footer Informazioni */}
           <footer className="bg-white p-16 rounded-[4rem] shadow-2xl border-2 border-slate-200 flex flex-col md:flex-row items-center gap-12 no-print">
-            <div className={`p-10 rounded-full ${isGuided ? 'bg-emerald-500 shadow-emerald-200' : (activeTab === 'portfolio' ? 'bg-indigo-600' : currentCategory.color) + ' shadow-slate-200'} text-white shadow-2xl scale-110`}>
+            <div className={`p-10 rounded-full ${isGuided ? 'bg-emerald-500 shadow-emerald-200' : (activeTab === 'portfolio' ? 'bg-indigo-600' : activeTab === 'deck' ? 'bg-slate-800' : currentCategory.color) + ' shadow-slate-200'} text-white shadow-2xl scale-110`}>
               <Info size={56} strokeWidth={3} />
             </div>
             <div className="text-center md:text-left">
@@ -726,6 +992,8 @@ export default function App() {
               </p>
             </div>
           </footer>
+            </>
+          )}
         </div>
       </main>
 

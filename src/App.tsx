@@ -554,7 +554,7 @@ export default function App() {
       {/* Sidebar Navigazione COMPATTA */}
       <div className="bg-[#1a1b1e] w-full lg:w-64 flex-shrink-0 flex flex-col shadow-2xl z-20 lg:h-screen lg:sticky lg:top-0 border-r border-slate-800 no-print">
         <div className="p-5 border-b border-slate-800 bg-[#0d0e10] text-center">
-          <h1 className="text-[33px] font-black tracking-tighter uppercase italic flex items-center justify-center gap-2">
+          <h1 className="text-[33px] font-black tracking-tighter uppercase flex items-center justify-center gap-2">
             <Layers size={24} className="text-indigo-500" />
             <div className="flex tracking-tighter">
               <span className="text-[#f37021]">S</span>

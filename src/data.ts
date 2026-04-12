@@ -9,15 +9,60 @@ import {
 import { HexagonIcon, CircleIcon } from './components/Icons';
 
 export const categories = [
-  { id: 'digcomp', title: 'DigComp', description: 'Competenze digitali per i cittadini', hex: '#f37021', color: 'bg-[#f37021]', text: 'text-[#f37021]', border: 'border-[#f37021]', gradient: 'from-[#f37021] to-[#f7941d]', icon: Cpu },
-  { id: 'entrecomp', title: 'EntreComp', description: 'Competenze imprenditoriali e spirito di iniziativa', hex: '#91278f', color: 'bg-[#91278f]', text: 'text-[#91278f]', border: 'border-[#91278f]', gradient: 'from-[#91278f] to-[#b3519e]', icon: Lightbulb },
-  { id: 'lifecomp', title: 'LifeComp', description: 'Competenze personali, sociali e di imparare a imparare', hex: '#8dc63f', color: 'bg-[#8dc63f]', text: 'text-[#8dc63f]', border: 'border-[#8dc63f]', gradient: 'from-[#8dc63f] to-[#a6ce39]', icon: User },
-  { id: 'greencomp', title: 'GreenComp', description: 'Competenze per la sostenibilità ambientale', hex: '#00a651', color: 'bg-[#00a651]', text: 'text-[#00a651]', border: 'border-[#00a651]', gradient: 'from-[#00a651] to-[#3cb878]', icon: Leaf },
-  { id: 'transversal', title: 'Trasversali', description: 'Competenze trasversali e soft skills', hex: '#00aeef', color: 'bg-[#00aeef]', text: 'text-[#00aeef]', border: 'border-[#00aeef]', gradient: 'from-[#00aeef] to-[#6dcff6]', icon: Share2 },
-  { id: 'setting', title: 'Setting', description: "Definizione del contesto e dei parametri dell'attività", hex: '#6d6e71', color: 'bg-[#6d6e71]', text: 'text-[#6d6e71]', border: 'border-[#6d6e71]', gradient: 'from-[#6d6e71] to-[#939598]', icon: Settings },
-  { id: 'planning', title: 'Pianificazione', description: "Fasi di progettazione dell'esperienza di apprendimento", hex: '#414042', color: 'bg-[#414042]', text: 'text-[#414042]', border: 'border-[#414042]', gradient: 'from-[#414042] to-[#58595b]', icon: MapIcon },
-  { id: 'methods', title: 'Metodi', description: 'Strategie e metodologie didattiche', hex: '#3ab54a', color: 'bg-[#3ab54a]', text: 'text-[#3ab54a]', border: 'border-[#3ab54a]', gradient: 'from-[#3ab54a] to-[#8dc63f]', icon: BookOpen },
-  { id: 'assessment', title: 'Valutazione', description: 'Strumenti e approcci per la valutazione', hex: '#2e3192', color: 'bg-[#2e3192]', text: 'text-[#2e3192]', border: 'border-[#2e3192]', gradient: 'from-[#2e3192] to-[#662d91]', icon: CheckSquare },
+  { 
+    id: 'digcomp', title: 'DigComp', description: 'Competenze digitali per i cittadini', 
+    hex: '#f37021', color: 'bg-[#f37021]', text: 'text-[#f37021]', border: 'border-[#f37021]', gradient: 'from-[#f37021] to-[#f7941d]', icon: Cpu,
+    quote: '"Il digitale non è solo tecnologia, è una nuova grammatica della cittadinanza."',
+    info: 'Riferimento: Vuorikari, R., Kluzer, S. and Punie, Y., DigComp 2.2: The Digital Competence Framework for Citizens, EUR 31006 EN, Publications Office of the European Union, Luxembourg, 2022.'
+  },
+  { 
+    id: 'entrecomp', title: 'EntreComp', description: 'Competenze imprenditoriali e spirito di iniziativa', 
+    hex: '#91278f', color: 'bg-[#91278f]', text: 'text-[#91278f]', border: 'border-[#91278f]', gradient: 'from-[#91278f] to-[#b3519e]', icon: Lightbulb,
+    quote: '"L\'imprenditorialità è la capacità di agire sulle opportunità e trasformarle in valore per gli altri."',
+    info: 'Riferimento: Bacigalupo, M., Kampylis, P., Punie, Y., Brande, G. (2016). EntreComp: The Entrepreneurship Competence Framework. Luxembourg: Publication Office of the European Union.'
+  },
+  { 
+    id: 'lifecomp', title: 'LifeComp', description: 'Competenze personali, sociali e di imparare a imparare', 
+    hex: '#8dc63f', color: 'bg-[#8dc63f]', text: 'text-[#8dc63f]', border: 'border-[#8dc63f]', gradient: 'from-[#8dc63f] to-[#a6ce39]', icon: User,
+    quote: '"Imparare a imparare è la competenza più importante per il XXI secolo."',
+    info: 'Riferimento: Sala, A., Punie, Y., Garkov, V. and Cabrera Giraldez, M., LifeComp: The European Framework for Personal, Social and Learning to Learn Key Competence, EUR 30246 EN, Publications Office of the European Union, Luxembourg, 2020.'
+  },
+  { 
+    id: 'greencomp', title: 'GreenComp', description: 'Competenze per la sostenibilità ambientale', 
+    hex: '#00a651', color: 'bg-[#00a651]', text: 'text-[#00a651]', border: 'border-[#00a651]', gradient: 'from-[#00a651] to-[#3cb878]', icon: Leaf,
+    quote: '"Sviluppare la conoscenza, le abilità e le attitudini per vivere, lavorare e agire in modo sostenibile."',
+    info: 'Riferimento: Bianchi, G., Pisiotis, U. and Cabrera Giraldez, M., GreenComp The European sustainability competence framework, EUR 30955 EN, Publications Office of the European Union, Luxembourg, 2022.'
+  },
+  { 
+    id: 'transversal', title: 'Trasversali', description: 'Competenze trasversali e soft skills', 
+    hex: '#00aeef', color: 'bg-[#00aeef]', text: 'text-[#00aeef]', border: 'border-[#00aeef]', gradient: 'from-[#00aeef] to-[#6dcff6]', icon: Share2,
+    quote: '"Le competenze trasversali sono il collante che unisce le conoscenze tecniche alla capacità di applicarle."',
+    info: 'Le competenze trasversali (soft skills) sono abilità interpersonali, comunicative e cognitive applicabili in ogni contesto della vita e del lavoro.'
+  },
+  { 
+    id: 'setting', title: 'Setting', description: "Definizione del contesto e dei parametri dell'attività", 
+    hex: '#6d6e71', color: 'bg-[#6d6e71]', text: 'text-[#6d6e71]', border: 'border-[#6d6e71]', gradient: 'from-[#6d6e71] to-[#939598]', icon: Settings,
+    quote: '"Un buon inizio è metà dell\'opera. Definire il contesto è il primo passo per un apprendimento efficace."',
+    info: 'La fase di Setting aiuta a definire i parametri fondamentali dell\'attività: obiettivi, destinatari, risorse, tempi e spazi.'
+  },
+  { 
+    id: 'planning', title: 'Pianificazione', description: "Fasi di progettazione dell'esperienza di apprendimento", 
+    hex: '#414042', color: 'bg-[#414042]', text: 'text-[#414042]', border: 'border-[#414042]', gradient: 'from-[#414042] to-[#58595b]', icon: MapIcon,
+    quote: '"Se non sai dove stai andando, qualsiasi strada ti ci porterà. Pianifica il tuo percorso."',
+    info: 'La fase di Pianificazione struttura l\'esperienza di apprendimento, definendo le competenze target, i metodi e gli output attesi.'
+  },
+  { 
+    id: 'methods', title: 'Metodi', description: 'Strategie e metodologie didattiche', 
+    hex: '#3ab54a', color: 'bg-[#3ab54a]', text: 'text-[#3ab54a]', border: 'border-[#3ab54a]', gradient: 'from-[#3ab54a] to-[#8dc63f]', icon: BookOpen,
+    quote: '"Non esiste un unico modo di imparare. Scegli il metodo che meglio si adatta ai tuoi obiettivi."',
+    info: 'La scelta delle metodologie didattiche (es. Project Based Learning, Gamification, Peer Education) determina come i partecipanti interagiranno con i contenuti.'
+  },
+  { 
+    id: 'assessment', title: 'Valutazione', description: 'Strumenti e approcci per la valutazione', 
+    hex: '#2e3192', color: 'bg-[#2e3192]', text: 'text-[#2e3192]', border: 'border-[#2e3192]', gradient: 'from-[#2e3192] to-[#662d91]', icon: CheckSquare,
+    quote: '"La valutazione non è un giudizio, ma una bussola per orientare l\'apprendimento."',
+    info: 'La fase di Valutazione definisce come misurare i progressi e il raggiungimento delle competenze, utilizzando strumenti formativi e sommativi.'
+  },
 ];
 
 export const cardsData = {

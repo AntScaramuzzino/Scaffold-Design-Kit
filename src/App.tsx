@@ -137,18 +137,18 @@ const Card: React.FC<CardProps> = ({ card, categoryId, isSelected, onToggle, onO
 
       {/* Stampa: Area Note o Hint (Compatta per griglia 3x3) */}
       {isDeckView ? (
-        <div className={`${category.color} p-2 hidden print:flex flex-col min-h-[60px] max-h-[60px] overflow-hidden`}>
-          <p className="text-[9px] italic text-white font-bold leading-tight">
+        <div className={`${category.color} p-2 hidden print:flex flex-col min-h-[75px] max-h-[75px] overflow-hidden`}>
+          <p className="text-[9px] italic text-white font-bold leading-tight line-clamp-4">
             💡 {card.hint || "Nessun suggerimento disponibile."}
           </p>
         </div>
       ) : (
-        <div className="bg-amber-50 border-t border-amber-200 p-2 hidden print:flex flex-col min-h-[60px] max-h-[60px] overflow-hidden">
+        <div className="bg-amber-50 border-t border-amber-200 p-2 hidden print:flex flex-col min-h-[75px] max-h-[75px] overflow-hidden">
           <div className="flex items-center gap-1 mb-1 text-amber-600">
             <StickyNote size={10} />
             <h4 className="text-[8px] font-black uppercase tracking-tight">Note</h4>
           </div>
-          <p className="text-[9px] italic text-slate-700 leading-tight line-clamp-3">
+          <p className="text-[9px] italic text-slate-700 leading-tight line-clamp-4">
             {note || "Spazio note..."}
           </p>
         </div>
@@ -361,7 +361,7 @@ export default function App() {
     if (selected.length === 0) return;
 
     let content = userName 
-      ? `# PORTFOLIO DELLE COMPETENZE DI ${userName.toUpperCase()}\n\nRiepilogo del progetto didattico generato.\n\n---\n\n`
+      ? `# IL PORTFOLIO DI ${userName.toUpperCase()}\n\nRiepilogo del progetto didattico generato con SCAFFOLD.\n\n---\n\n`
       : `# IL MIO PORTFOLIO SCAFFOLD\n\nRiepilogo del progetto didattico generato.\n\n---\n\n`;
 
     const grouped = selected.reduce((acc, card) => {
@@ -444,7 +444,7 @@ export default function App() {
         <style>
           @page {
             size: A4;
-            margin: 1cm;
+            margin: 0.8cm 0.8cm 1.1cm 0.8cm;
           }
           body { 
             background: white !important; 
@@ -457,10 +457,10 @@ export default function App() {
           .print-card { 
             page-break-inside: avoid !important; 
             break-inside: avoid !important;
-            border: 1px solid #d4d4d8 !important;
-            border-radius: 0.5rem;
+            border: 1px solid #e4e4e7 !important;
+            border-radius: 0.75rem;
             width: 100%;
-            height: 8.5cm; /* Ridotto da 8.8cm per evitare overflow */
+            height: 7.9cm; 
             display: flex;
             flex-direction: column;
             overflow: hidden;
@@ -471,11 +471,10 @@ export default function App() {
           .print-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            grid-template-rows: repeat(3, 8.5cm);
+            grid-auto-rows: 7.9cm;
             align-content: start;
-            gap: 4mm;
+            gap: 3mm;
             width: 100%;
-            height: 26.5cm; /* Altezza fissa del contenitore per forzare il break */
             page-break-after: always;
             margin: 0 !important;
             padding: 0 !important;
@@ -503,6 +502,15 @@ export default function App() {
           Generazione PDF in corso, attendere 2 secondi...
         </div>
         <div id="content" class="max-w-6xl mx-auto p-0" style="display:none;">
+          <div class="mb-2 border-b border-indigo-600 pb-1 flex items-baseline justify-between">
+            <h1 class="text-[10pt] font-black uppercase tracking-tighter italic text-slate-900 leading-none">
+              ${userName ? `Il Portfolio di ${userName}` : 'Il Mio Portfolio SCAFFOLD'}
+            </h1>
+            <div class="flex items-center gap-4">
+              <p class="text-slate-500 font-bold uppercase tracking-[0.2em] text-[8pt]">Design Kit Interattivo • Riepilogo Competenze</p>
+              <p class="text-indigo-600 font-black uppercase tracking-widest text-[8pt]">Generato il ${new Date().toLocaleDateString('it-IT')}</p>
+            </div>
+          </div>
           ${chunksHtml}
         </div>
         <script>
